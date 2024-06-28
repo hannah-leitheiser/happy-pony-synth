@@ -25,4 +25,7 @@ RUN python setup.py install
 
 WORKDIR /app
 
+# Set PYTHONPATH to include /app and /src
+ENV PYTHONPATH /app:/src
+
 ENTRYPOINT ["python", "main.py"]
