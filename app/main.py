@@ -2,6 +2,8 @@ import argparse
 import happy_pony_synth
 
 def main():
+    print(happy_pony_synth.__file__)
+    print(dir(happy_pony_synth))
     parser = argparse.ArgumentParser(description='Description of your script')
     parser.add_argument('midifilename', type=str, default="", help='Input midi file.')
 
