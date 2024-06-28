@@ -13,7 +13,7 @@ def main():
     print(f'Arguments: {args}')
     
     midifilename = args.midifilename
-    #happy_pony_synth.convert_midi_to_wav( midifilename )
+    happy_pony_synth.convert_midi_to_wav( midifilename )
     
     print("Hello, World!")
 
