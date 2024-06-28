@@ -76,7 +76,7 @@ def soundFunction(note, duration, volume, voice=0,sampleRate=48000, tic=tick):
 
 
 def convert_midi_to_wav( midifilename ):
-
+    outputfilename = os.path.splitext(midifilename)[0]
     notes=[]
     vocals=[]
     reset = False
@@ -113,7 +113,7 @@ def convert_midi_to_wav( midifilename ):
                            thenote=aa
                      vocals[thenote] = (vocals[thenote][0], vocals[thenote][1], ticklocation, vocals[thenote][2])
 
-    afile = aifc.open("test.aiff", "wb")
+    afile = aifc.open(outputfilename+".aiff", "wb")
     afile.aiff()
     afile.setnchannels(1)
     afile.setsampwidth(2)
