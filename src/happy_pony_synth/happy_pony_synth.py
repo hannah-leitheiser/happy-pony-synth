@@ -74,44 +74,54 @@ def soundFunction(note, duration, volume, voice=0,sampleRate=48000, tic=tick):
          x=x+1
       return noteSample
 
+def get_channel(line):
+    if "channel=0" in line:
+        return 0
+    if "channel=1" in line:
+        return 1
+    if "channel=2" in line:
+        return 2
+    if "channel=3" in line:
+        return 3
+
 
 def convert_midi_to_wav( midifilename ):
     outputfilename = os.path.splitext(midifilename)[0]
     notes=[]
     vocals=[]
-    reset = False
+    currentChannel = 0
     for track in midi.read_midifile(midifilename):
         ticklocation=0
         for line in str(track).split("\n"):
            print(line)
-           if not reset and "channel=1" in line:
-               reset = True
+           if currentChannel != get_channel(line):
+               currentChannel = get_channel(line)
                ticklocation = 0
            if line[:20] == "   midi.NoteOnEvent(":
               if ' 0]' not in line:
                  ticklocation = ticklocation + int( line[25:].split(",")[0])
-                 if "channel=0" in line:
+                 if "channel=0" in line or True:
                    notes.append( (ticklocation, int(line[25:].split("[")[1].split(",")[0]) , int(line[25:].split("]")[0].split("data=[")[1].split(" ")[1]) ) )
-                 if "channel=1" in line:
-                    print("Vocal tick location: " + str(ticklocation))
-                    vocals.append( (ticklocation, int(line[25:].split("[")[1].split(",")[0]) , int(line[25:].split("]")[0].split("data=[")[1].split(" ")[1]) ) )
+                 #if "channel=1" in line:
+                 #   print("Vocal tick location: " + str(ticklocation))
+                 #   vocals.append( (ticklocation, int(line[25:].split("[")[1].split(",")[0]) , int(line[25:].split("]")[0].split("data=[")[1].split(" ")[1]) ) )
 
               else:
                  ticklocation = ticklocation + int( line[25:].split(",")[0])
                  thenote = 0
 
              
-                 if "channel=0" in line:
+                 if "channel=0" in line or True:
                      for aa in range(len(notes)):
                         if notes[aa][1] ==  int(line[25:].split("[")[1].split(",")[0]):
                            thenote=aa
                      notes[thenote] = (notes[thenote][0], notes[thenote][1], ticklocation, notes[thenote][2])
 
-                 if "channel=1" in line:
-                     for aa in range(len(vocals)):
-                        if vocals[aa][1] ==  int(line[25:].split("[")[1].split(",")[0]):
-                           thenote=aa
-                     vocals[thenote] = (vocals[thenote][0], vocals[thenote][1], ticklocation, vocals[thenote][2])
+                 #if "channel=1" in line:
+                 #    for aa in range(len(vocals)):
+                 #       if vocals[aa][1] ==  int(line[25:].split("[")[1].split(",")[0]):
+                 #          thenote=aa
+                 #    vocals[thenote] = (vocals[thenote][0], vocals[thenote][1], ticklocation, vocals[thenote][2])
 
     afile = aifc.open(outputfilename+".aiff", "wb")
     afile.aiff()
