@@ -80,7 +80,7 @@ def convert_midi_to_wav( midifilename ):
     notes=[]
     vocals=[]
     reset = False
-    for track in midi.read_midifile("eastersong.mid"):
+    for track in midi.read_midifile(midifilename):
         ticklocation=0
         for line in str(track).split("\n"):
            print(line)
