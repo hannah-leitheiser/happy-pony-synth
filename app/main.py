@@ -11,7 +11,7 @@ def main():
     print(f'Arguments: {args}')
     
     midifilename = args.midifilename
-    synth.convert_midi_to_wav( midifilename ):
+    synth.convert_midi_to_wav( midifilename )
     
     print("Hello, World!")
 
