@@ -1,5 +1,5 @@
 import argparse
-import mido
+import synth
 
 def main():
     parser = argparse.ArgumentParser(description='Description of your script')
@@ -9,11 +9,9 @@ def main():
 
     # Access the arguments
     print(f'Arguments: {args}')
-
-    songname = args.midifilename
-    mid = mido.MidiFile(songname)
-    for msg in mid:
-        print(msg)
+    
+    midifilename = args.midifilename
+    synth.convert_midi_to_wav( midifilename ):
     
     print("Hello, World!")
 
