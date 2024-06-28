@@ -1,5 +1,5 @@
 import argparse
-import synth
+import happy_pony_synth
 
 def main():
     parser = argparse.ArgumentParser(description='Description of your script')
@@ -11,7 +11,7 @@ def main():
     print(f'Arguments: {args}')
     
     midifilename = args.midifilename
-    synth.convert_midi_to_wav( midifilename )
+    happy_pony_synth.convert_midi_to_wav( midifilename )
     
     print("Hello, World!")
 
