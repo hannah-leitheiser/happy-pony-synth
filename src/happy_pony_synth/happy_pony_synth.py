@@ -41,6 +41,15 @@ def voiceFunction(note, duration, volume, voice=0,sampleRate=48000, tic=tick):
         outWave.append(x * (volume/127))
     return outWave
 
+class Voice:
+    def __init__( name, asdr, fm_overtone_modulation_proportion_matrix ):
+        self.name = name
+        self.asdr = asdr
+        self.fm_overtone_modulation_proportion_matrix = fm_overtone_modulation_proportion_matrix
+
+    def synthesize_fm_wave( self, note, duration, volume, sampleRate=48000):
+        pass
+
 
 
 def soundFunction(note, duration, volume, voice=0,sampleRate=48000, tic=tick):
