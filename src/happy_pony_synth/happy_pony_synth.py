@@ -213,7 +213,7 @@ def soundFunction(note, duration, volume, voice=0,sampleRate=48000, tic=tick):
 
 
 def convert_midi_to_wav( midifilename ):
-    midi_data = produce_midi_arrays( midifilename )
+    midi_data = read_midi_file.produce_midi_arrays( midifilename )
     outputfilename = os.path.splitext(midifilename)[0]
     notes=[]
     vocals=[]
