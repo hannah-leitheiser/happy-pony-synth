@@ -10,6 +10,8 @@ import math
 
 from scipy.io import wavfile
 
+import read_midi_file
+
 tick=60
 SampleRate=48000
 maxAmplitude = 0x7FFF
