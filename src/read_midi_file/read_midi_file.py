@@ -35,4 +35,4 @@ def produce_midi_arrays(midi_file_path):
                                     (current_tick - note_to_save[1]) / ticks_per_second, 
                                     msg.note, note_to_save[0], msg.track))
 
-    return {"note":notes, "lyrics": lyrics, "length" : midi_file.length)
+    return {"note":notes, "lyrics": lyrics, "length" : midi_file.length }
