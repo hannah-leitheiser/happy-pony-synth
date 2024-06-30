@@ -3,9 +3,7 @@
 FROM ubuntu:20.04
 
 # Install ffmpeg and other dependencies
-RUN apt-get update && apt-get install -y ffmpeg && apt-get install -y libttspico-utils \
-    apt-get install -y python3 && \
-    apt-get install -y python3-pip
+RUN apt-get update && apt-get install -y ffmpeg python3 python3-pip libpicotts-utils
 
 COPY . .
 
