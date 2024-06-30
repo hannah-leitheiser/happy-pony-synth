@@ -17,6 +17,7 @@ def produce_midi_arrays(midi_file_path):
     notes = list()
     lyrics = list()
     midi_file = mido.MidiFile(midi_file_path)
+    ticks_per_second = get_ticks_per_second(midi_file_path)
     for t in range(len(midi_file.tracks)):
         track = midi_file.tracks[t]
         current_tick = 0
@@ -24,12 +25,14 @@ def produce_midi_arrays(midi_file_path):
         for msg in track:
             current_tick+=msg.time
             if msg.type == "lyrics":
-                lyrics.append( (current_tick, msg.text, msg.track))
+                lyrics.append( (current_tick/ticks_per_second, msg.text, msg.track))
             if msg.type == "note_on":
                 if hasattr(msg, 'velocity') and msg.velocity > 0:
                     current_notes[msg.note] = (msg.velocity, current_tick)
                 if hasattr(msg, 'velocity') and msg.velocity == 0:
                     note_to_save = current_notes.pop(msg.note)
-                    notes.append ( (note_to_save[1], current_tick - note_to_save[1], msg.note, note_to_save[0], msg.track))
+                    notes.append ( (note_to_save[1]/ticks_per_second, 
+                                    (current_tick - note_to_save[1]) / ticks_per_second, 
+                                    msg.note, note_to_save[0], msg.track))
 
-    return {"note":notes, "lyrics": lyrics)
+    return {"note":notes, "lyrics": lyrics, "length" : midi_file.length)
