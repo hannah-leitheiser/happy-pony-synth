@@ -3,12 +3,13 @@
 FROM ubuntu:20.04
 
 # Install ffmpeg and other dependencies
-RUN apt-get update && apt-get install -y ffmpeg && apt-get install -y libttspico-utils
+RUN apt-get update && apt-get install -y ffmpeg && apt-get install -y libttspico-utils \
+    apt-get install -y pip3
 
 COPY . .
 
 COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 WORKDIR /app
 
@@ -21,11 +22,11 @@ RUN apt-get update && \
 WORKDIR /app/python3-midi
 
 # Install the midi library using setup.py
-RUN python setup.py install
+RUN python3 setup.py install
 
 WORKDIR /app
 
 # Set PYTHONPATH to include /app and /src
 ENV PYTHONPATH /app:/src
 
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT ["python3", "main.py"]
