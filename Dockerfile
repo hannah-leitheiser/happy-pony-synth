@@ -2,6 +2,12 @@
 
 FROM ubuntu:20.04
 
+# Set non-interactive mode for apt-get
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set the timezone environment variable
+ENV TZ=Etc/UTC
+
 # Install ffmpeg and other dependencies
 RUN apt-get update && apt-get install -y ffmpeg python3 python3-pip libttspico-utils
 
