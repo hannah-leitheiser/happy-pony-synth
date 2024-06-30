@@ -1,6 +1,6 @@
 # Dockerfile
 
-FROM python:3.9-slim
+FROM ubuntu:20.04
 
 # Install ffmpeg and other dependencies
 RUN apt-get update && apt-get install -y ffmpeg && apt-get install -y libttspico-utils
