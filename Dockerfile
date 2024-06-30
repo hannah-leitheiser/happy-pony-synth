@@ -3,7 +3,8 @@
 FROM python:3.9-slim
 
 # Install ffmpeg and other dependencies
-RUN apt-get update && apt-get install -y ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg &&
+    apt-get install -y libttspico-utils
 
 COPY . .
 
