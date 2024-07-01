@@ -42,7 +42,7 @@ def voiceFunction(word, volume,sampleRate=48000):
     return outWave
 
 class Program:
-    def __init__( name, asdr, fm_overtone_modulation_proportion_matrix ):
+    def __init__( self, name, asdr, fm_overtone_modulation_proportion_matrix ):
         self.name = name
         self.asdr = asdr
         self.fm_overtone_modulation_proportion_matrix = fm_overtone_modulation_proportion_matrix
@@ -220,7 +220,7 @@ def convert_midi_to_wav( midifilename ):
            o = int(seed)
            seed-=o
            overtones.append( o / 100 )
-       program = Program( ADSR( 0.1, 0.1, 0.7, 0.05), OvertoneFMModulationMatrix(overtones))
+       program = Program( note[4], ADSR( 0.1, 0.1, 0.7, 0.05), OvertoneFMModulationMatrix(overtones))
        noteSamples = soundFunction( note[2], note[1], note[3], program, sample_rate)
        for x in range(len(noteSamples)):
           if int(x + note[0]*sample_rate) < len(sound):
