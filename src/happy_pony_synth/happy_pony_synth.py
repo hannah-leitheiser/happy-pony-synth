@@ -42,9 +42,9 @@ def voiceFunction(word, volume,sampleRate=48000):
     return outWave
 
 class Program:
-    def __init__( self, name, asdr, fm_overtone_modulation_proportion_matrix ):
+    def __init__( self, name, adsr, fm_overtone_modulation_proportion_matrix ):
         self.name = name
-        self.asdr = asdr
+        self.adsr = adsr
         self.fm_overtone_modulation_proportion_matrix = fm_overtone_modulation_proportion_matrix
 
     def synthesize_fm_wave( self, note, duration, volume, sampleRate=48000):
