@@ -23,7 +23,7 @@ def produce_midi_arrays(midi_file_path):
         current_tick = 0
         current_notes = dict()
         for msg in track:
-            print((msg, track))
+            print((msg, t))
             current_tick+=msg.time
             if msg.type == "lyrics":
                 # lyrics ( time_start, text, track )
