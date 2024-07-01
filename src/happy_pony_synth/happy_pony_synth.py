@@ -281,8 +281,8 @@ def convert_midi_to_wav( midifilename ):
        print(word)
        noteSamples = voiceFunction( word[1], 100)
        for x in range(len(noteSamples)):
-          if int(x + note[0]*sample_rate) < len(sound):
-             sound[ int(note[0]*sample_rate + x) ] = sound[ int(note[0]*sample_rate + x) ] + noteSamples[x]
+          if int(x + word[0]*sample_rate) < len(sound):
+             sound[ int(word[0]*sample_rate + x) ] = sound[ int(word[0]*sample_rate + x) ] + noteSamples[x]
 
 
     for a in range(len(sound)):
