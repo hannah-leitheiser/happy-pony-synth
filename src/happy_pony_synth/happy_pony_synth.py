@@ -265,7 +265,7 @@ def convert_midi_to_wav( midifilename ):
     afile.setsampwidth(2)
     afile.setframerate(sample_rate)
 
-    sound = [0]*(sample_rate*(midi_date["length"]+1))
+    sound = [0]*(sample_rate*(midi_data["length"]+1))
 
 
     # notes (time_start, duration, note_number, velocity, channel, track )
