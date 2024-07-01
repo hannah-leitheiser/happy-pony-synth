@@ -19,23 +19,30 @@ def produce_midi_arrays(midi_file_path):
     midi_file = mido.MidiFile(midi_file_path)
     ticks_per_second = get_ticks_per_second(midi_file_path)
     for t in range(len(midi_file.tracks)):
+        channels = dict()
         track = midi_file.tracks[t]
         current_tick = 0
         current_notes = dict()
         for msg in track:
             print((msg, t))
             current_tick+=msg.time
+            #  Message('program_change', channel=3, program=9, time=0)
+            if msg.type == "program_change":
+                channels[msg.channel] = msg.program
             if msg.type == "lyrics":
                 # lyrics ( time_start, text, track )
                 lyrics.append( (current_tick/ticks_per_second, msg.text, t))
             if msg.type == "note_on":
                 if hasattr(msg, 'velocity') and msg.velocity > 0:
-                    current_notes[msg.note] = (msg.velocity, current_tick)
+                    program = -1
+                    if msg.channel in channels:
+                        program = channels[msg.channel]
+                    current_notes[msg.note] = (msg.velocity, current_tick, program)
                 if hasattr(msg, 'velocity') and msg.velocity == 0:
                     note_to_save = current_notes.pop(msg.note)
-                    # notes (time_start, duration, note_number, velocity, channel, track )
+                    # notes (time_start, duration, note_number, velocity, program, channel, track )
                     notes.append ( (note_to_save[1]/ticks_per_second, 
                                     (current_tick - note_to_save[1]) / ticks_per_second, 
-                                    msg.note, note_to_save[0], msg.channel, t))
+                                    msg.note, note_to_save[0], note_to_save[2], msg.channel, t))
 
     return {"notes":notes, "lyrics": lyrics, "length" : midi_file.length }
