@@ -41,7 +41,7 @@ def voiceFunction(word, volume,sampleRate=48000):
         outWave.append(x * (volume/127))
     return outWave
 
-class Voice:
+class Program:
     def __init__( name, asdr, fm_overtone_modulation_proportion_matrix ):
         self.name = name
         self.asdr = asdr
@@ -49,22 +49,6 @@ class Voice:
 
     def synthesize_fm_wave( self, note, duration, volume, sampleRate=48000):
         pass
-
-
-
-
-def get_channel(line):
-    if "channel=0" in line:
-        return 0
-    if "channel=1" in line:
-        return 1
-    if "channel=2" in line:
-        return 2
-    if "channel=3" in line:
-        return 3
-
-
-
 
 class ADSR:
     def __init__(self, attack_time, decay_time, 
@@ -165,17 +149,14 @@ def fm_modulate( carrier_frequency, modulator, sample_rate ):
 
 
 
-def soundFunction(note, duration, volume, sampleRate=48000):
+def soundFunction(note, duration, volume, program, sampleRate=48000):
     if volume <= 0:
           return []
     noteSample=[]
     n = MusicalNote(note, volume, duration)
-    #class ADSR:
-    #__init__(attack_time, decay_time,  
-    #        sustain_level, release_time):
-    a = ADSR( 0.1, 0.1, 0.7, 0.05)
+    a = program.adsr
     a_curve = generate_asdr_envelope(n, a, sampleRate)
-    m = OvertoneFMModulationMatrix([1, 0.0, 0.0, 0.0, 0.0, 0.0])
+    m = program.fm_overtone_modulation_proportion_matrix
     ms = generate_modulator_signal(n, len(a_curve)/sampleRate, m, sampleRate)
     fm = fm_modulate( n.get_frequency_in_Hz(), ms, sampleRate)
     noteSample = am_modulate( fm, a_curve)
@@ -226,10 +207,21 @@ def convert_midi_to_wav( midifilename ):
     sound = [0]*(int(sample_rate*(midi_data["length"]+1)))
 
 
-    # notes (time_start, duration, note_number, velocity, channel, track )
+    # notes (time_start, duration, note_number, velocity, program, channel, track )
     for note in midi_data["notes"]:
        print(note)
-       noteSamples = soundFunction( note[2], note[1], note[3], sample_rate)
+       #class ADSR:
+       #__init__(attack_time, decay_time,  
+       #        sustain_level, release_time):
+       seed = math.cos(note[4])
+       overtones = list()
+       for x in range(5):
+           seed*=2
+           o = int(seed)
+           seed-=o
+           overtones.append( o / 100 )
+       program = Program( ADSR( 0.1, 0.1, 0.7, 0.05), OvertoneFMModulationMatrix(overtones))
+       noteSamples = soundFunction( note[2], note[1], note[3], program, sample_rate)
        for x in range(len(noteSamples)):
           if int(x + note[0]*sample_rate) < len(sound):
              sound[ int(note[0]*sample_rate + x) ] = sound[ int(note[0]*sample_rate + x) ] + noteSamples[x]
