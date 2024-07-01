@@ -265,7 +265,7 @@ def convert_midi_to_wav( midifilename ):
     afile.setsampwidth(2)
     afile.setframerate(sample_rate)
 
-    sound = [0]*(sample_rate*(midi_data["length"]+1))
+    sound = [0]*(int(sample_rate*(midi_data["length"]+1)))
 
 
     # notes (time_start, duration, note_number, velocity, channel, track )
@@ -273,16 +273,16 @@ def convert_midi_to_wav( midifilename ):
        print(note)
        noteSamples = soundFunction( note[2], note[1], note[3], sample_rate)
        for x in range(len(noteSamples)):
-          if x + note[0]*sample_rate < len(sound):
-             sound[ note[0]*sample_rate + x ] = sound[ note[0]*sample_rate + x ] + noteSamples[x]
+          if int(x + note[0]*sample_rate) < len(sound):
+             sound[ int(note[0]*sample_rate + x) ] = sound[ int(note[0]*sample_rate + x) ] + noteSamples[x]
 
     # lyrics ( time_start, text, track )
     for word in midi_data["lyrics"]:
        print(word)
        noteSamples = voiceFunction( word[1], 100)
        for x in range(len(noteSamples)):
-          if x + note[0]*sample_rate < len(sound):
-             sound[ note[0]*sample_rate + x ] = sound[ note[0]*sample_rate + x ] + noteSamples[x]
+          if int(x + note[0]*sample_rate) < len(sound):
+             sound[ int(note[0]*sample_rate + x) ] = sound[ int(note[0]*sample_rate + x) ] + noteSamples[x]
 
 
     for a in range(len(sound)):
