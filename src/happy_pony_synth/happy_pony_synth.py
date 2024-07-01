@@ -29,7 +29,7 @@ if words[0] == "":
     words = words[1:]
 wordIndex = 0
 
-def voiceFunction(note, duration, volume, tic, word, voice=0,sampleRate=48000):
+def voiceFunction(word, volume,sampleRate=48000):
     print(word )
     os.system("pico2wave --wave=t.wav \"" + word + "\"")
     samplerate, data = wavfile.read('t.wav')
@@ -165,11 +165,11 @@ def fm_modulate( carrier_frequency, modulator, sample_rate ):
 
 
 
-def soundFunction(note, duration, volume, voice=0,sampleRate=48000, tic=tick):
+def soundFunction(note, duration, volume, sampleRate=48000):
     if volume <= 0:
           return []
     noteSample=[]
-    n = MusicalNote(note, volume, (duration*tick)/sampleRate)
+    n = MusicalNote(note, volume, duration)
     #class ADSR:
     #__init__(attack_time, decay_time,  
     #        sustain_level, release_time):
@@ -258,32 +258,31 @@ def convert_midi_to_wav( midifilename ):
                  #          thenote=aa
                  #    vocals[thenote] = (vocals[thenote][0], vocals[thenote][1], ticklocation, vocals[thenote][2])
 
+    sample_rate = 48000
     afile = aifc.open(outputfilename+".aiff", "wb")
     afile.aiff()
     afile.setnchannels(1)
     afile.setsampwidth(2)
-    afile.setframerate(48000)
+    afile.setframerate(sample_rate)
 
-    sound = [0]*(48000*300)
-
-
+    sound = [0]*(sample_rate*(midi_date["length"]+1))
 
 
-    for note in notes:
+    # notes (time_start, duration, note_number, velocity, channel, track )
+    for note in midi_data["notes"]:
        print(note)
-       noteSamples = soundFunction( note[1], note[2]-note[0], note[3], 2)
+       noteSamples = soundFunction( note[2], note[1], note[3], sample_rate)
        for x in range(len(noteSamples)):
-          if x + note[0]*tick < len(sound):
-             sound[ note[0]*tick + x ] = sound[ note[0]*tick + x ] + noteSamples[x]
+          if x + note[0]*sample_rate < len(sound):
+             sound[ note[0]*sample_rate + x ] = sound[ note[0]*sample_rate + x ] + noteSamples[x]
 
-
-    for word in vocals:
+    # lyrics ( time_start, text, track )
+    for word in midi_data["lyrics"]:
        print(word)
-       note = word
-       noteSamples = voiceFunction( 0, 0, 100, 2, note[1])
+       noteSamples = voiceFunction( word[1], 100)
        for x in range(len(noteSamples)):
-          if x + note[0]*tick < len(sound):
-             sound[ note[0]*tick + x ] = sound[ note[0]*tick + x ] + noteSamples[x]
+          if x + note[0]*sample_rate < len(sound):
+             sound[ note[0]*sample_rate + x ] = sound[ note[0]*sample_rate + x ] + noteSamples[x]
 
 
     for a in range(len(sound)):
