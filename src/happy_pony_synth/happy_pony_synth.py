@@ -225,7 +225,7 @@ def convert_midi_to_wav( midifilename ):
            o = int(seed)
            seed-=o
            overtones.append( ((x+1), o / 100) )
-       program = Program( note[4], ADSR( 0.1, 0.1, 0.7, 0.05), FMModulationMatrix([(3,20],overtones))
+       program = Program( note[4], ADSR( 0.1, 0.1, 0.7, 0.05), FMModulationMatrix([(3,20)],overtones))
        noteSamples = soundFunction( note[2], note[1], note[3], program, sample_rate)
        for x in range(len(noteSamples)):
           if int(x + note[0]*sample_rate) < len(sound):
