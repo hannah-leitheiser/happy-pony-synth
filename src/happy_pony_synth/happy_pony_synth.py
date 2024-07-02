@@ -78,9 +78,10 @@ def scale_amplitude( note):
     return amplitude 
 
 
-class OvertoneFMModulationMatrix:
-    def __init__(self, matrix):
-        self.matrix = matrix
+class FMModulationMatrix:
+    def __init__(self, absolute_frequency_matrix, overtone_matrix):
+        self.overtone_matrix = overtone_matrix
+        self.absolute_frequency_matrix = absolute_frequency_matrix
 
 
 def generate_asdr_envelope(note, adsr, sample_rate):
@@ -111,16 +112,20 @@ def generate_asdr_envelope(note, adsr, sample_rate):
     return envelope
 
 
-def generate_modulator_signal(note, duration, overtone_matrix, sample_rate):
+def generate_modulator_signal(note, duration, FM_matrix, sample_rate):
     note_frequency = note.get_frequency_in_Hz()
     note_period_samples = sample_rate / note_frequency
     signal = []
     for x in range(int(duration*sample_rate)):
         sample = 0
-        for overtone in range(len(overtone_matrix.matrix)):
+        for overtone in range(len(FM_matrix.overtone_matrix)):
             theta_fundamental = math.pi * 2 * (x / note_period_samples)
-            theta = theta_fundamental * (overtone + 2)
-            amount = note_frequency * overtone_matrix.matrix[overtone]
+            theta = theta_fundamental * FM_matrix.overtone_matrix[overtone][0]
+            amount = note_frequency * overtone_matrix.matrix[overtone][1]
+            sample += math.sin(theta) * amount
+        for frequency in range(len(FM_matrix.absolute_frequency_matrix)):
+            theta = math.pi * 2 * (frequency[0] / sample_rate)
+            amount = frequency[1]
             sample += math.sin(theta) * amount
         signal.append(sample)
     return signal
@@ -219,8 +224,8 @@ def convert_midi_to_wav( midifilename ):
            seed*=2
            o = int(seed)
            seed-=o
-           overtones.append( o / 100 )
-       program = Program( note[4], ADSR( 0.1, 0.1, 0.7, 0.05), OvertoneFMModulationMatrix(overtones))
+           overtones.append( ((x+1), o / 100) )
+       program = Program( note[4], ADSR( 0.1, 0.1, 0.7, 0.05), FMModulationMatrix([(3,20],overtones))
        noteSamples = soundFunction( note[2], note[1], note[3], program, sample_rate)
        for x in range(len(noteSamples)):
           if int(x + note[0]*sample_rate) < len(sound):
