@@ -123,9 +123,10 @@ def generate_modulator_signal(note, duration, FM_matrix, sample_rate):
             theta = theta_fundamental * FM_matrix.overtone_matrix[overtone][0]
             amount = note_frequency * FM_matrix.overtone_matrix[overtone][1]
             sample += math.sin(theta) * amount
-        for frequency in range(len(FM_matrix.absolute_frequency_matrix)):
+        for f in range(len(FM_matrix.absolute_frequency_matrix)):
+            frequency = FM_matrix.absolute_frequency_matrix[f]
             theta = math.pi * 2 * (frequency[0] / sample_rate)
-            amount = frequency[1]
+            amount = frequency[1] * note_frequency
             sample += math.sin(theta) * amount
         signal.append(sample)
     return signal
@@ -225,7 +226,7 @@ def convert_midi_to_wav( midifilename ):
            o = int(seed)
            seed-=o
            overtones.append( ((x+1), o / 100) )
-       program = Program( note[4], ADSR( 0.1, 0.1, 0.7, 0.05), FMModulationMatrix([(3,20)],overtones))
+       program = Program( note[4], ADSR( 0.1, 0.1, 0.7, 0.05), FMModulationMatrix([(3,0.3)],overtones))
        noteSamples = soundFunction( note[2], note[1], note[3], program, sample_rate)
        for x in range(len(noteSamples)):
           if int(x + note[0]*sample_rate) < len(sound):
