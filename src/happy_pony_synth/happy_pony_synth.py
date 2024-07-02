@@ -121,7 +121,7 @@ def generate_modulator_signal(note, duration, FM_matrix, sample_rate):
         for overtone in range(len(FM_matrix.overtone_matrix)):
             theta_fundamental = math.pi * 2 * (x / note_period_samples)
             theta = theta_fundamental * FM_matrix.overtone_matrix[overtone][0]
-            amount = note_frequency * overtone_matrix.matrix[overtone][1]
+            amount = note_frequency * FM_matrix.overtone_matrix[overtone][1]
             sample += math.sin(theta) * amount
         for frequency in range(len(FM_matrix.absolute_frequency_matrix)):
             theta = math.pi * 2 * (frequency[0] / sample_rate)
