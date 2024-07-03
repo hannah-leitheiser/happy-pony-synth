@@ -246,9 +246,9 @@ def convert_midi_to_wav( midifilename, lilypond_filename ):
        #class ADSR:
        #__init__(attack_time, decay_time,  
        #        sustain_level, release_time):
-       modulation = FMModulationMatrix( [], [] )
+       modulation = ("None", ADSR(0.5,0.8, 0.5, 0.5), FMModulationMatrix( [], [] ))
        if int(note[4]) in programs.keys():
-           modulation = FMModulationMatrix( programs[int(note[4])]["absolute"], programs[int(note[4])]["relative"] )
+           modulation = ("None", ADSR(0.5, 0.8, 0.5, 0.5),FMModulationMatrix( programs[int(note[4])]["absolute"], programs[int(note[4])]["relative"] ))
         
        noteSamples = soundFunction( note[2], note[1], note[3], modulation, sample_rate)
        for x in range(len(noteSamples)):
