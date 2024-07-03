@@ -6,7 +6,7 @@ def main():
     print(dir(happy_pony_synth))
     parser = argparse.ArgumentParser(description='Description of your script')
     parser.add_argument('midifilename', type=str, default="", help='Input midi file.')
-    parser.add_argument('lilypondfilename', type=str, default="", help='Input lilypond file.")
+    parser.add_argument('lilypondfilename', type=str, default="", help='Input lilypond file.')
 
     args = parser.parse_args()
 
