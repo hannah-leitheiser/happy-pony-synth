@@ -199,7 +199,32 @@ def soundFunction(note, duration, volume, program, sampleRate=48000):
       """
 
 
-def convert_midi_to_wav( midifilename ):
+def convert_midi_to_wav( midifilename, lilypond_filename ):
+    programs = dict()
+    for line in open(lilypond_filename).readlines():
+        if "Program " in line:
+            a = line
+            a=a.replace(" ","")
+            a=a.split("Program")[1]
+            program = int(a.split(":")[0])
+            a=a.split(":")[1]
+            a=a.replace(",","")
+            a=a.split("][")
+            
+            programs[program] = {"fixed":[], "relative":[]}
+            for x in a:
+                x = x.replace("[","")
+                x = x.replace("]","")
+                if "Hz" in x:
+                    hz = float(x.split("Hz")[0])
+                    amount = float(x.split("Hz")[1][:-1])
+                    programs[program]["fixed"].append((hz, amount/100))
+                if "x" in x:
+                    xx = float(x.split("x")[0])
+                    amount = float(x.split("x")[1][:-1])
+                    programs[program]["relative"].append((xx, amount/100))
+    print(programs)
+    
     midi_data = read_midi_file.produce_midi_arrays( midifilename )
     outputfilename = os.path.splitext(midifilename)[0]
     
@@ -219,6 +244,10 @@ def convert_midi_to_wav( midifilename ):
        #class ADSR:
        #__init__(attack_time, decay_time,  
        #        sustain_level, release_time):
+       modulation = FMModulationMatrix( [], [] )
+       if note[4] in programs.keys():
+           modulation = FMModulationMatrix( programs[note[4]]["absolute"], programs[note[4]]["relative"] )
+            
        seed = math.cos(note[4])
        overtones = list()
        for x in range(5):
@@ -226,7 +255,7 @@ def convert_midi_to_wav( midifilename ):
            o = int(seed)
            seed-=o
            overtones.append( ((x+1), o / 100) )
-       program = Program( note[4], ADSR( 0.1, 0.1, 0.7, 0.05), FMModulationMatrix([(3,0.3)],overtones))
+       program = Program( note[4], ADSR( 0.1, 0.1, 0.7, 0.05), modulation)
        noteSamples = soundFunction( note[2], note[1], note[3], program, sample_rate)
        for x in range(len(noteSamples)):
           if int(x + note[0]*sample_rate) < len(sound):
