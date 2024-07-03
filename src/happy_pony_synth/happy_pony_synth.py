@@ -247,18 +247,10 @@ def convert_midi_to_wav( midifilename, lilypond_filename ):
        #__init__(attack_time, decay_time,  
        #        sustain_level, release_time):
        modulation = FMModulationMatrix( [], [] )
-       if note[4] in programs.keys():
-           modulation = FMModulationMatrix( programs[note[4]]["absolute"], programs[note[4]]["relative"] )
-            
-       seed = math.cos(note[4])
-       overtones = list()
-       for x in range(5):
-           seed*=2
-           o = int(seed)
-           seed-=o
-           overtones.append( ((x+1), o / 100) )
-       program = Program( note[4], ADSR( 0.1, 0.1, 0.7, 0.05), modulation)
-       noteSamples = soundFunction( note[2], note[1], note[3], program, sample_rate)
+       if int(note[4]) in programs.keys():
+           modulation = FMModulationMatrix( programs[int(note[4])]["absolute"], programs[int(note[4])]["relative"] )
+        
+       noteSamples = soundFunction( note[2], note[1], note[3], modulation, sample_rate)
        for x in range(len(noteSamples)):
           if int(x + note[0]*sample_rate) < len(sound):
              sound[ int(note[0]*sample_rate + x) ] = sound[ int(note[0]*sample_rate + x) ] + noteSamples[x]
