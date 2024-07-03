@@ -205,6 +205,7 @@ def convert_midi_to_wav( midifilename, lilypond_filename ):
         if "Program " in line:
             a = line
             a=a.replace(" ","")
+            a=a.replace("\n","")
             a=a.split("Program")[1]
             program = int(a.split(":")[0])
             a=a.split(":")[1]
