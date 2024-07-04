@@ -213,14 +213,14 @@ def convert_midi_to_wav( midifilename, lilypond_filename ):
             a=a.replace(",","")
             a=a.split("][")
             
-            programs[program] = {"fixed":[], "relative":[]}
+            programs[program] = {"absolute":[], "relative":[]}
             for x in a:
                 x = x.replace("[","")
                 x = x.replace("]","")
                 if "Hz" in x:
                     hz = float(x.split("Hz")[0])
                     amount = float(x.split("Hz")[1][:-1])
-                    programs[program]["fixed"].append((hz, amount/100))
+                    programs[program]["absolute"].append((hz, amount/100))
                 if "x" in x:
                     xx = float(x.split("x")[0])
                     amount = float(x.split("x")[1][:-1])
