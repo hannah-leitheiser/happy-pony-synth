@@ -209,11 +209,16 @@ def convert_midi_to_wav( midifilename, lilypond_filename ):
             a=a.replace("\n","")
             a=a.split("Program")[1]
             program = int(a.split(":")[0])
-            a=a.split(":")[1]
+            adsr = a.split(":")[1]
+            adsr = adsr.replace("s","")
+            adsr = adsr.replace("%","")
+            adsr = adsr.split(",")
+            
+            a=a.split(":")[2]
             a=a.replace(",","")
             a=a.split("][")
             
-            programs[program] = {"absolute":[], "relative":[]}
+            programs[program] = {"absolute":[], "relative":[], "adsr" : (float(adsr[0]), float(adsr[1]/100), float(adsr[2]))}
             for x in a:
                 x = x.replace("[","")
                 x = x.replace("]","")
@@ -248,7 +253,8 @@ def convert_midi_to_wav( midifilename, lilypond_filename ):
        #        sustain_level, release_time):
        modulation = Program("None", ADSR(0.5,0.8, 0.5, 0.5), FMModulationMatrix( [], [] ))
        if int(note[4]) in programs.keys():
-           modulation = Program("None", ADSR(0.5, 0.8, 0.5, 0.5),FMModulationMatrix( programs[int(note[4])]["absolute"], programs[int(note[4])]["relative"] ))
+           adsr = programs[int(note[4])]["adsr"]
+           modulation = Program(note[4], ADSR(adsr[0], adsr[1], adsr[2]),FMModulationMatrix( programs[int(note[4])]["absolute"], programs[int(note[4])]["relative"] ))
         
        noteSamples = soundFunction( note[2], note[1], note[3], modulation, sample_rate)
        for x in range(len(noteSamples)):
