@@ -218,7 +218,7 @@ def convert_midi_to_wav( midifilename, lilypond_filename ):
             a=a.replace(",","")
             a=a.split("][")
             
-            programs[program] = {"absolute":[], "relative":[], "adsr" : (float(adsr[0]), float(adsr[1]/100), float(adsr[2]))}
+            programs[program] = {"absolute":[], "relative":[], "adsr" : (float(adsr[0]), float(adsr[1])/100, float(adsr[2]))}
             for x in a:
                 x = x.replace("[","")
                 x = x.replace("]","")
