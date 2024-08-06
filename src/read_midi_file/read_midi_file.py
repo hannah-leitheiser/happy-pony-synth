@@ -18,17 +18,22 @@ def produce_midi_arrays(midi_file_path):
     lyrics = list()
     midi_file = mido.MidiFile(midi_file_path)
     ticks_per_second = get_ticks_per_second(midi_file_path)
+    track_is_vocal = False
+    vocal_notes = dict()
     for t in range(len(midi_file.tracks)):
         channels = dict()
         track = midi_file.tracks[t]
         current_tick = 0
-        current_notes = dict()
         for msg in track:
             print((msg, t))
             current_tick+=msg.time
             #  Message('program_change', channel=3, program=9, time=0)
             if msg.type == "program_change":
                 channels[msg.channel] = msg.program
+            #  MetaMessage('track_name', name='singer:vocal', time=0)
+            if msg.type == "track_name":
+                if msg.name = "singer:vocal":
+                    track_is_vocal = True
             if msg.type == "lyrics":
                 # lyrics ( time_start, text, track )
                 lyrics.append( (current_tick/ticks_per_second, msg.text, t))
@@ -41,7 +46,10 @@ def produce_midi_arrays(midi_file_path):
                 if hasattr(msg, 'velocity') and msg.velocity == 0:
                     note_to_save = current_notes.pop(msg.note)
                     # notes (time_start, duration, note_number, velocity, program, channel, track )
-                    notes.append ( (note_to_save[1]/ticks_per_second, 
+                    if track_is_vocal:
+                        print("vocal")
+                    else:
+                        notes.append ( (note_to_save[1]/ticks_per_second, 
                                     (current_tick - note_to_save[1]) / ticks_per_second, 
                                     msg.note, note_to_save[0], note_to_save[2], msg.channel, t))
 
