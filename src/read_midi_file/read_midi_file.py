@@ -32,7 +32,7 @@ def produce_midi_arrays(midi_file_path):
                 channels[msg.channel] = msg.program
             #  MetaMessage('track_name', name='singer:vocal', time=0)
             if msg.type == "track_name":
-                if msg.name = "singer:vocal":
+                if msg.name == "singer:vocal":
                     track_is_vocal = True
             if msg.type == "lyrics":
                 # lyrics ( time_start, text, track )
@@ -47,10 +47,19 @@ def produce_midi_arrays(midi_file_path):
                     note_to_save = current_notes.pop(msg.note)
                     # notes (time_start, duration, note_number, velocity, program, channel, track )
                     if track_is_vocal:
-                        print("vocal")
+                        vocal_notes.append ( (note_to_save[1]/ticks_per_second, 
+                                    (current_tick - note_to_save[1]) / ticks_per_second, 
+                                    msg.note, note_to_save[0], note_to_save[2], msg.channel, t))
                     else:
                         notes.append ( (note_to_save[1]/ticks_per_second, 
                                     (current_tick - note_to_save[1]) / ticks_per_second, 
                                     msg.note, note_to_save[0], note_to_save[2], msg.channel, t))
-
+    for li in range(len(lyrics)):
+        l = lyrics[li]
+        time = l[0]
+        velocity = 100
+        for v in vocal_notes:
+            if v[0] == time:
+                velocity = v[3]
+        lyrics[li] = (l[0], l[1], [2], velocity)
     return {"notes":notes, "lyrics": lyrics, "length" : midi_file.length }
