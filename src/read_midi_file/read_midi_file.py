@@ -18,10 +18,10 @@ def produce_midi_arrays(midi_file_path):
     lyrics = list()
     midi_file = mido.MidiFile(midi_file_path)
     ticks_per_second = get_ticks_per_second(midi_file_path)
-    track_is_vocal = False
     vocal_notes = list()
-    current_notes = dict()
     for t in range(len(midi_file.tracks)):
+        current_notes = dict()
+        track_is_vocal = False
         channels = dict()
         track = midi_file.tracks[t]
         current_tick = 0
