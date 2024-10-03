@@ -262,12 +262,13 @@ def convert_midi_to_wav( midifilename, lilypond_filename ):
              sound[ int(note[0]*sample_rate + x) ] = sound[ int(note[0]*sample_rate + x) ] + noteSamples[x]
 
     # lyrics ( time_start, text, track )
+    bias = -0.1
     for word in midi_data["lyrics"]:
        print(word)
        noteSamples = voiceFunction( word[1], 20)
        for x in range(len(noteSamples)):
-          if int(x + word[0]*sample_rate) < len(sound):
-             sound[ int(word[0]*sample_rate + x) ] = sound[ int(word[0]*sample_rate + x) ] + noteSamples[x]
+          if int(x + word[0]*sample_rate + bias*sample_rate) < len(sound) and int(x + word[0]*sample_rate + bias*sample_rate) >= 0:
+             sound[ int(word[0]*sample_rate + x + sample_rate*bias) ] = sound[ int(word[0]*sample_rate + x + sample_rate*bias) ] + noteSamples[x]
 
 
     for a in range(len(sound)):
