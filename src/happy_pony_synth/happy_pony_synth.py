@@ -31,6 +31,8 @@ wordIndex = 0
 
 def voiceFunction(word, volume,sampleRate=48000):
     print(word )
+    if "[" in word and "]" in word:
+        word = (word.split("[")[1]).split("]")[0]
     os.system("pico2wave --wave=t.wav \"" + word + "\"")
     samplerate, data = wavfile.read('t.wav')
     #wordIndex = wordIndex + 1
